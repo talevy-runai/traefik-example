@@ -1,0 +1,21 @@
+http:
+  services:
+    redoc-service:
+      loadBalancer:
+        servers:
+        - url: http://traefik-example-my-service-1:8080
+  routers:
+    redoc-router:
+      rule: "Path(`/api/docs`) || PathPrefix(`/redoc`, `/api/redoc`)"
+      entryPoints:
+      - web
+      service: redoc-service
+      middlewares:
+      - remove-url-prefix
+      priority: 100
+  middlewares:
+    remove-url-prefix:
+      stripPrefix:
+        prefixes:
+        - /api/docs
+        - /api

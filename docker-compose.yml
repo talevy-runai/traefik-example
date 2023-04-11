@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  reverse-proxy:
+    # network_mode: host
+    # The official v2 Traefik docker image
+    image: traefik:v2.9.10
+    # Enables the web UI and tells Traefik to listen to docker
+    command: 
+    - "--providers.file.directory=/etc/traefik"
+    - "--entrypoints.traefik.address=:9000/tcp"
+    - "--entrypoints.web.address=:8080/tcp"
+    - "--log.format=json"
+    - "--log.level=DEBUG"
+    - "--accesslog=true"
+    - "--accesslog.format=json"
+    - "--api.dashboard=true"
+    - "--api.insecure=true"
+
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+      - "9000:9000"
+
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - //Users/talevy/Projects/other/apigateway/traefik-example/traefik:/etc/traefik
+
+  my-service:
+    # Your service image
+    image: gcr.io/run-ai-lab/redoc:latest
+
+    # command: 
+
+    ports:
+      - "8888:8080"
+    # volumes:
+    #   - /Users/talevy/Projects/other/apigateway/traefik/traefik:/etc/traefik
+
+
+
+
